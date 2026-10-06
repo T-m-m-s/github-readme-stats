@@ -23,7 +23,7 @@ const fetcher = (variables, token) => {
           login
         }
         viewer {
-          repositories(ownerAffiliations: [OWNER, ORGANIZATION_MEMBER, COLLABORATOR], isFork: false, first: 100) {
+          repositories(affiliations: [OWNER, ORGANIZATION_MEMBER, COLLABORATOR], isFork: false, first: 100) {
             nodes {
 		          name
     		      languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {
