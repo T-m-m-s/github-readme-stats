@@ -20,29 +20,31 @@ const fetcher = (variables, token) => {
       query: `
       query userInfo($login: String!) {
         user(login: $login) {
-          # fetch only owner repos & not forks
+          login
+        }
+        viewer {
           repositories(ownerAffiliations: [OWNER, ORGANIZATION_MEMBER, COLLABORATOR], isFork: false, first: 100) {
             nodes {
-              name
-              languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {
-                edges {
+		          name
+    		      languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {
+    		        edges {
                   size
                   node {
                     color
-                    name
-                  }
+    			          name
+    			        }
                 }
               }
-            }
+    		    }
           }
         }
       }
       `,
       variables,
-    },
+	  },
     {
       Authorization: `token ${token}`,
-    },
+	  },
   );
 };
 
@@ -90,8 +92,8 @@ const fetchTopLanguages = async (
       CustomError.GRAPHQL_ERROR,
     );
   }
-
-  let repoNodes = res.data.data.user.repositories.nodes;
+  
+  let repoNodes = (res.data.data.viewer || res.data.data.user).repositories.nodes;
   /** @type {Record<string, boolean>} */
   let repoToHide = {};
   const allExcludedRepos = [...exclude_repo, ...excludeRepositories];
