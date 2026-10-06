@@ -23,19 +23,24 @@ const fetcher = (variables, token) => {
           login
         }
         viewer {
-          repositories(affiliations: [OWNER, ORGANIZATION_MEMBER, COLLABORATOR], isFork: false, first: 100) {
+          repositories(
+		  	affiliations: [OWNER, ORGANIZATION_MEMBER, COLLABORATOR],
+			ownerAffiliations: [OWNER, ORGANIZATION_MEMBER, COLLABORATOR],
+			isFork: false,
+			first: 100
+		  ) {
             nodes {
-		          name
-    		      languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {
-    		        edges {
+		      name
+    		  languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {
+    		    edges {
                   size
                   node {
                     color
-    			          name
-    			        }
+    		        name
+    		      }
                 }
               }
-    		    }
+    		}
           }
         }
       }
@@ -94,6 +99,7 @@ const fetchTopLanguages = async (
   }
   
   let repoNodes = (res.data.data.viewer || res.data.data.user).repositories.nodes;
+  console.log("REPOS FOUND:", repoNodes.map((r) => r.name));
   /** @type {Record<string, boolean>} */
   let repoToHide = {};
   const allExcludedRepos = [...exclude_repo, ...excludeRepositories];
